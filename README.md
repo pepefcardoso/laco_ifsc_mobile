@@ -2,6 +2,10 @@
 
 App para famílias e amigos distantes se sentirem presentes no dia a dia uns dos outros.
 
+## Integrantes do Grupo
+- **Artur**
+- **pepefcardoso** (Pedro Cardoso)
+
 ## Features mapeadas por requisito
 
 | Requisito | Implementação |
