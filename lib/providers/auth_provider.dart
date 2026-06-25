@@ -30,6 +30,13 @@ class AuthProvider with ChangeNotifier {
     });
   }
 
+  Future<void> refreshUser() async {
+    if (_user != null) {
+      _userModel = await _firestoreService.getUser(_user!.uid);
+      notifyListeners();
+    }
+  }
+
   String _mapFirebaseError(String code) {
     switch (code) {
       case 'invalid-credential':

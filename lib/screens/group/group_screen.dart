@@ -220,6 +220,7 @@ class _GroupScreenState extends State<GroupScreen> {
                     if (uid != null) {
                       final success = await groupProvider.joinGroup(_codeController.text, uid);
                       if (success && mounted) {
+                        await authProvider.refreshUser();
                         Navigator.pushReplacementNamed(context, AppRoutes.home);
                       }
                     }
@@ -318,8 +319,11 @@ class _GroupScreenState extends State<GroupScreen> {
                       if (_nameController.text.isNotEmpty) {
                         final uid = authProvider.currentUser?.uid;
                         if (uid != null) {
-                          await groupProvider.createGroup(_nameController.text, uid);
+                          final success = await groupProvider.createGroup(_nameController.text, uid);
+                          if (success && mounted) {
+                            await authProvider.refreshUser();
                           }
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(
