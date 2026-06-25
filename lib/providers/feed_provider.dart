@@ -20,11 +20,17 @@ class FeedProvider with ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   void loadPosts(String groupId) {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
     _postsSubscription?.cancel();
     _postsSubscription = _firestoreService.getGroupPostsStream(groupId).listen((posts) {
       _posts = posts;
+      _isLoading = false;
       notifyListeners();
     }, onError: (e) {
+      _isLoading = false;
       _errorMessage = 'Erro ao carregar os posts: $e';
       notifyListeners();
     });

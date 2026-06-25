@@ -54,7 +54,7 @@ Criar/entrar em grupo via código.
 - **Firebase Storage** — fotos
 - **geolocator** — GPS
 - **OpenWeatherMap API** — clima por coordenada
-- **google_maps_flutter** — mapa dos membros
+- **flutter_map** + tiles OpenStreetMap — mapa dos membros (sem API key)
 
 ---
 
