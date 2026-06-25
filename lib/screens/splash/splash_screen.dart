@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_routes.dart';
+import '../../providers/auth_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,11 +16,38 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
-      if (mounted) {
-        Navigator.pushReplacementNamed(context, AppRoutes.login);
+    _checkAuthAndNavigate();
+  }
+
+  Future<void> _checkAuthAndNavigate() async {
+    // Wait for at least 2 seconds for the splash screen animation
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (!mounted) return;
+
+    final authProvider = context.read<AuthProvider>();
+    
+    // AuthProvider initializes and listens to authStateChanges.
+    // If we have a user, it might take a split second to fetch the userModel.
+    // We can wait a tiny bit to see if userModel is populated if user is not null.
+    if (authProvider.currentUser != null && authProvider.userModel == null) {
+      // Small delay to allow the Firestore fetch to complete in AuthProvider constructor
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+
+    if (!mounted) return;
+
+    if (authProvider.currentUser == null) {
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
+    } else {
+      // User is logged in
+      final userModel = authProvider.userModel;
+      if (userModel != null && userModel.groupId.isNotEmpty) {
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
+      } else {
+        Navigator.pushReplacementNamed(context, AppRoutes.group);
       }
-    });
+    }
   }
 
   @override
@@ -39,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   painter: ConnectionPainter(),
                 ),
                 const SizedBox(height: 40),
-                Text(
+                const Text(
                   'Laço',
                   style: TextStyle(
                     fontFamily: 'Nunito',
