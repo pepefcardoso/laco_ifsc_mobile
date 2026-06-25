@@ -71,9 +71,9 @@ class FirestoreService {
     await _db.collection('groups').doc(groupId).update({
       'members': FieldValue.arrayUnion([uid])
     });
-    await _db.collection('users').doc(uid).update({
+    await _db.collection('users').doc(uid).set({
       'groupId': groupId
-    });
+    }, SetOptions(merge: true));
   }
 
   Future<void> createPost(PostModel post) async {

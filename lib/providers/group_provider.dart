@@ -81,6 +81,8 @@ class GroupProvider with ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
     
+    final normalizedCode = code.trim().toUpperCase();
+    
     try {
       final currentUserDoc = await _firestoreService.getUser(userId);
       if (currentUserDoc != null && currentUserDoc.groupId.isNotEmpty) {
@@ -90,7 +92,7 @@ class GroupProvider with ChangeNotifier {
         return false;
       }
 
-      final group = await _firestoreService.getGroupByCode(code);
+      final group = await _firestoreService.getGroupByCode(normalizedCode);
       if (group == null) {
         _isLoading = false;
         _errorMessage = 'Código inválido. Grupo não encontrado.';
