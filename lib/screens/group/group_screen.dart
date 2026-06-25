@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_routes.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/group_provider.dart';
 
 class GroupScreen extends StatefulWidget {
   const GroupScreen({super.key});
@@ -11,12 +15,13 @@ class GroupScreen extends StatefulWidget {
 
 class _GroupScreenState extends State<GroupScreen> {
   bool _showCodeView = false;
-  final String _generatedCode = 'LCO972';
   final _codeController = TextEditingController();
+  final _nameController = TextEditingController();
 
   @override
   void dispose() {
     _codeController.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 
@@ -45,7 +50,19 @@ class _GroupScreenState extends State<GroupScreen> {
   }
 
   Widget _buildSelectionView() {
-    return Column(
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final groupProvider = Provider.of<GroupProvider>(context);
+
+    if (authProvider.userModel?.groupId != null && authProvider.userModel!.groupId.isNotEmpty) {
+      // User is already in a group
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
+      });
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return SingleChildScrollView(
+      child: Column(
       key: const ValueKey('SelectionView'),
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -114,6 +131,29 @@ class _GroupScreenState extends State<GroupScreen> {
           ),
         ),
         const SizedBox(height: 16),
+        if (groupProvider.errorMessage != null && !_showCodeView) ...[
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.coralSuave.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.coralSuave.withOpacity(0.5)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.error_outline, color: AppColors.coralSuave),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    groupProvider.errorMessage!,
+                    style: const TextStyle(fontFamily: 'Inter', color: AppColors.carvao, fontSize: 14),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
         // Enter Code Card
         Container(
           padding: const EdgeInsets.all(24),
@@ -177,9 +217,15 @@ class _GroupScreenState extends State<GroupScreen> {
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () {
+                onPressed: groupProvider.isLoading ? null : () async {
                   if (_codeController.text.length == 6) {
-                    Navigator.pushReplacementNamed(context, AppRoutes.home);
+                    final uid = authProvider.currentUser?.uid;
+                    if (uid != null) {
+                      final success = await groupProvider.joinGroup(_codeController.text, uid);
+                      if (success && mounted) {
+                        Navigator.pushReplacementNamed(context, AppRoutes.home);
+                      }
+                    }
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -188,16 +234,115 @@ class _GroupScreenState extends State<GroupScreen> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                child: const Text('Entrar no Grupo', style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold)),
+                child: groupProvider.isLoading 
+                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                  : const Text('Entrar no Grupo', style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold)),
               ),
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 
   Widget _buildCodeCreatedView() {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final groupProvider = Provider.of<GroupProvider>(context);
+
+    if (groupProvider.currentGroup == null) {
+      return SingleChildScrollView(
+        child: Column(
+          key: const ValueKey('CreateGroupFormView'),
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back, color: AppColors.carvao),
+                  onPressed: () {
+                    setState(() {
+                      _showCodeView = false;
+                      _nameController.clear();
+                    });
+                  },
+                ),
+                const Text(
+                  'Criar Novo Grupo',
+                  style: TextStyle(fontFamily: 'Nunito', fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.carvao),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AppColors.azulSuave.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: AppColors.azulSuave.withOpacity(0.3), width: 1.5),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Como se chama sua família?',
+                    style: TextStyle(fontFamily: 'Nunito', fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.carvao),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: _nameController,
+                    textCapitalization: TextCapitalization.words,
+                    decoration: InputDecoration(
+                      hintText: 'Ex: Família Silva',
+                      filled: true,
+                      fillColor: AppColors.brancoPuro,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: const BorderSide(color: AppColors.azulSuave, width: 1.5),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(14),
+                        borderSide: BorderSide(color: AppColors.cinzaMorno.withOpacity(0.2), width: 1.0),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  if (groupProvider.errorMessage != null) ...[
+                    Text(
+                      groupProvider.errorMessage!,
+                      style: const TextStyle(color: AppColors.coralSuave, fontSize: 14),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  ElevatedButton(
+                    onPressed: groupProvider.isLoading ? null : () async {
+                      if (_nameController.text.isNotEmpty) {
+                        final uid = authProvider.currentUser?.uid;
+                        if (uid != null) {
+                          await groupProvider.createGroup(_nameController.text, uid);
+                          // State will update and show the code view since currentGroup is no longer null
+                        }
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.azulSuave,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: groupProvider.isLoading 
+                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                      : const Text('Criar e Gerar Código', style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Column(
       key: const ValueKey('CodeCreatedView'),
       mainAxisAlignment: MainAxisAlignment.center,
@@ -231,7 +376,7 @@ class _GroupScreenState extends State<GroupScreen> {
           ),
           child: Center(
             child: Text(
-              _generatedCode,
+              groupProvider.currentGroup!.code,
               style: const TextStyle(
                 fontFamily: 'Nunito',
                 fontSize: 36,
@@ -244,7 +389,9 @@ class _GroupScreenState extends State<GroupScreen> {
         ),
         const SizedBox(height: 32),
         ElevatedButton.icon(
-          onPressed: () {},
+          onPressed: () {
+            Share.share('Junte-se à minha família no Laço! Baixe o app e use o código de convite: ${groupProvider.currentGroup!.code}');
+          },
           icon: const Icon(Icons.share),
           label: const Text('Compartilhar Código'),
           style: ElevatedButton.styleFrom(

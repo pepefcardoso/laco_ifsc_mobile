@@ -30,6 +30,21 @@ class FirestoreService {
     await _db.collection('users').doc(uid).update(data);
   }
 
+  Future<List<UserModel>> getGroupMembers(List<String> uids) async {
+    if (uids.isEmpty) return [];
+    
+    // Firestore 'whereIn' limits to 10 items, handle if group has more than 10 members later if needed, 
+    // for this scope 10 is fine for a family app, or we can fetch individually. Let's fetch individually to be safe with any number of members.
+    List<UserModel> members = [];
+    for (String uid in uids) {
+      UserModel? user = await getUser(uid);
+      if (user != null) {
+        members.add(user);
+      }
+    }
+    return members;
+  }
+
   // --- Grupos ---
   Future<void> createGroup(GroupModel group) async {
     await _db.collection('groups').doc(group.id).set(group.toMap());

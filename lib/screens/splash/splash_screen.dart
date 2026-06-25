@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_routes.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/group_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -43,6 +44,9 @@ class _SplashScreenState extends State<SplashScreen> {
       // User is logged in
       final userModel = authProvider.userModel;
       if (userModel != null && userModel.groupId.isNotEmpty) {
+        // Load group data before going to home
+        final groupProvider = context.read<GroupProvider>();
+        await groupProvider.loadGroup(userModel.groupId);
         Navigator.pushReplacementNamed(context, AppRoutes.home);
       } else {
         Navigator.pushReplacementNamed(context, AppRoutes.group);
