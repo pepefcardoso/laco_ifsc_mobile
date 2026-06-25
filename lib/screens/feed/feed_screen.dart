@@ -36,7 +36,6 @@ class FeedScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 12),
-              // Members horizontal scroll header
               Text(
                 'Membros do Grupo',
                 style: TextStyle(
@@ -107,7 +106,6 @@ class FeedScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              // Dummy post feed list
               ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -136,7 +134,6 @@ class FeedScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        // Card photo area
                         AspectRatio(
                           aspectRatio: 4 / 3,
                           child: Container(
@@ -179,7 +176,6 @@ class FeedScreen extends StatelessWidget {
                                 style: const TextStyle(fontFamily: 'Inter', color: AppColors.carvao),
                               ),
                               const SizedBox(height: 12),
-                              // Reaction bar
                               Row(
                                 children: [
                                   IconButton(

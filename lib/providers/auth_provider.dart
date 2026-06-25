@@ -60,7 +60,6 @@ class AuthProvider with ChangeNotifier {
     
     try {
       await _authService.signInWithEmail(email, password);
-      // _userModel será atualizado via listener do authStateChanges
       _isLoading = false;
       notifyListeners();
       return true;
@@ -109,7 +108,7 @@ class AuthProvider with ChangeNotifier {
       
       _isLoading = false;
       notifyListeners();
-      return false; // Usuário cancelou
+      return false;
     } on FirebaseAuthException catch (e) {
       _isLoading = false;
       _errorMessage = _mapFirebaseError(e.code);

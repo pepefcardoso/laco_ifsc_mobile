@@ -13,7 +13,7 @@ class AuthService {
     try {
       return await _auth.signInWithEmailAndPassword(email: email, password: password);
     } catch (e) {
-      // Pode ser tratada na camada de provider/UI
+      // Tratada na camada de provider/UI
       rethrow;
     }
   }
@@ -28,28 +28,25 @@ class AuthService {
       await credential.user?.updateDisplayName(name);
       return credential;
     } catch (e) {
+      // Tratada na camada de provider/UI
       rethrow;
     }
   }
 
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      // Inicia o fluxo de autenticação
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        return null; // O usuário cancelou o login
+        return null;
       }
 
-      // Obtém os detalhes da autenticação da solicitação
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-      // Cria uma nova credencial
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      // Entra no Firebase com a credencial do Google
       return await _auth.signInWithCredential(credential);
     } catch (e) {
       rethrow;

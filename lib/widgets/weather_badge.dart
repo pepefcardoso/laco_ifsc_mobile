@@ -4,7 +4,7 @@ import '../core/constants/app_colors.dart';
 class WeatherBadge extends StatelessWidget {
   final String cityName;
   final double temperature;
-  final String weatherIcon; // Can be a string matching a key or character representation
+  final String weatherIcon;
 
   const WeatherBadge({
     super.key,

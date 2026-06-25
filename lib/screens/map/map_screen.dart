@@ -10,7 +10,6 @@ class MapScreen extends StatelessWidget {
       backgroundColor: AppColors.creme,
       body: Stack(
         children: [
-          // Simulated map background
           Container(
             color: AppColors.azulSuave.withOpacity(0.1),
             child: Center(
@@ -37,7 +36,6 @@ class MapScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Floating weather information card
           Positioned(
             top: 60,
             left: 20,

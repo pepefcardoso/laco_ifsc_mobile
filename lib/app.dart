@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'core/constants/app_colors.dart';
 import 'core/constants/app_routes.dart';
 import 'screens/splash/splash_screen.dart';
@@ -26,21 +27,20 @@ class LacoApp extends StatelessWidget {
           surface: AppColors.brancoPuro,
           error: Colors.redAccent,
         ),
-        textTheme: const TextTheme(
-          displayLarge: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.bold, color: AppColors.carvao),
-          titleLarge: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.bold, color: AppColors.carvao),
-          bodyLarge: TextStyle(fontFamily: 'Inter', color: AppColors.carvao),
-          bodyMedium: TextStyle(fontFamily: 'Inter', color: AppColors.carvao),
+        textTheme: TextTheme(
+          displayLarge: GoogleFonts.nunito(fontWeight: FontWeight.bold, color: AppColors.carvao),
+          titleLarge: GoogleFonts.nunito(fontWeight: FontWeight.bold, color: AppColors.carvao),
+          bodyLarge: GoogleFonts.inter(color: AppColors.carvao),
+          bodyMedium: GoogleFonts.inter(color: AppColors.carvao),
         ),
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           centerTitle: true,
-          titleTextStyle: TextStyle(
-            fontFamily: 'Nunito',
+          titleTextStyle: GoogleFonts.nunito(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: AppColors.carvao,
           ),
-          iconTheme: IconThemeData(color: AppColors.carvao),
+          iconTheme: const IconThemeData(color: AppColors.carvao),
         ),
       ),
       initialRoute: AppRoutes.splash,
@@ -51,7 +51,13 @@ class LacoApp extends StatelessWidget {
         AppRoutes.home: (context) => const HomeScreen(),
         AppRoutes.createPost: (context) => const CreatePostScreen(),
         AppRoutes.group: (context) => const GroupScreen(),
-        AppRoutes.profile: (context) => const ProfileScreen(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == AppRoutes.profile) {
+          final uid = settings.arguments as String?;
+          return MaterialPageRoute(builder: (_) => ProfileScreen(uid: uid));
+        }
+        return null;
       },
     );
   }

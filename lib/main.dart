@@ -12,7 +12,6 @@ import 'providers/location_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase using the generated/mock options
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

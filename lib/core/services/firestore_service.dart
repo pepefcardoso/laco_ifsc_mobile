@@ -7,7 +7,6 @@ import '../../models/hug_model.dart';
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // --- Usuários ---
   Future<void> createUser(UserModel user) async {
     await _db.collection('users').doc(user.id).set(user.toMap());
   }
@@ -33,8 +32,6 @@ class FirestoreService {
   Future<List<UserModel>> getGroupMembers(List<String> uids) async {
     if (uids.isEmpty) return [];
     
-    // Firestore 'whereIn' limits to 10 items, handle if group has more than 10 members later if needed, 
-    // for this scope 10 is fine for a family app, or we can fetch individually. Let's fetch individually to be safe with any number of members.
     List<UserModel> members = [];
     for (String uid in uids) {
       UserModel? user = await getUser(uid);
@@ -45,7 +42,6 @@ class FirestoreService {
     return members;
   }
 
-  // --- Grupos ---
   Future<void> createGroup(GroupModel group) async {
     await _db.collection('groups').doc(group.id).set(group.toMap());
   }
@@ -80,15 +76,15 @@ class FirestoreService {
     });
   }
 
-  // --- Posts ---
   Future<void> createPost(PostModel post) async {
-    await _db.collection('posts').doc(post.id).set(post.toMap());
+    await _db.collection('groups').doc(post.groupId).collection('posts').doc(post.id).set(post.toMap());
   }
 
   Stream<List<PostModel>> getGroupPostsStream(String groupId) {
     return _db
+        .collection('groups')
+        .doc(groupId)
         .collection('posts')
-        .where('groupId', isEqualTo: groupId)
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs
@@ -96,8 +92,8 @@ class FirestoreService {
             .toList());
   }
 
-  Future<void> reactToPost(String postId, String userId, String emoji) async {
-    final postRef = _db.collection('posts').doc(postId);
+  Future<void> reactToPost(String postId, String userId, String emoji, String groupId) async {
+    final postRef = _db.collection('groups').doc(groupId).collection('posts').doc(postId);
     await _db.runTransaction((transaction) async {
       final doc = await transaction.get(postRef);
       if (!doc.exists) return;
@@ -105,7 +101,6 @@ class FirestoreService {
       final data = doc.data()!;
       Map<String, String> reactions = Map<String, String>.from(data['reactions'] ?? {});
       
-      // Se já reagiu com esse emoji, remove; se não, adiciona/sobrescreve
       if (reactions.containsKey(userId) && reactions[userId] == emoji) {
         reactions.remove(userId);
       } else {
@@ -116,8 +111,7 @@ class FirestoreService {
     });
   }
 
-  // --- Abraços ---
   Future<void> sendHug(HugModel hug) async {
-    await _db.collection('hugs').doc(hug.id).set(hug.toMap());
+    await _db.collection('groups').doc(hug.groupId).collection('hugs').doc(hug.id).set(hug.toMap());
   }
 }

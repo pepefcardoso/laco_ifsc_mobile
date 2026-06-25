@@ -40,7 +40,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 12),
-              // Large image preview area (60% height simulation)
               Expanded(
                 flex: 6,
                 child: Container(
@@ -96,7 +95,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              // Caption field
               TextField(
                 controller: _captionController,
                 maxLines: 2,
@@ -116,7 +114,6 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              // Fixed publish button
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);

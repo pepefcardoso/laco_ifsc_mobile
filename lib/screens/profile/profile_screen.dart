@@ -3,7 +3,8 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_routes.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  final String? uid;
+  const ProfileScreen({super.key, this.uid});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,6 @@ class ProfileScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout, color: AppColors.coralSuave),
             onPressed: () {
-              // Confirm logout dialog
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
@@ -56,7 +56,6 @@ class ProfileScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
-              // Large circular profile avatar
               Center(
                 child: CircleAvatar(
                   radius: 48,
@@ -112,7 +111,6 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              // Post grid placeholder
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),

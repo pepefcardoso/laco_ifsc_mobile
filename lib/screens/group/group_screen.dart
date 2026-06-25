@@ -54,7 +54,6 @@ class _GroupScreenState extends State<GroupScreen> {
     final groupProvider = Provider.of<GroupProvider>(context);
 
     if (authProvider.userModel?.groupId != null && authProvider.userModel!.groupId.isNotEmpty) {
-      // User is already in a group
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacementNamed(context, AppRoutes.home);
       });
@@ -84,7 +83,6 @@ class _GroupScreenState extends State<GroupScreen> {
           style: TextStyle(fontFamily: 'Inter', color: AppColors.cinzaMorno, fontSize: 14),
         ),
         const SizedBox(height: 48),
-        // Create Group Card
         GestureDetector(
           onTap: () {
             setState(() {
@@ -154,7 +152,6 @@ class _GroupScreenState extends State<GroupScreen> {
           ),
           const SizedBox(height: 16),
         ],
-        // Enter Code Card
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
@@ -321,8 +318,7 @@ class _GroupScreenState extends State<GroupScreen> {
                         final uid = authProvider.currentUser?.uid;
                         if (uid != null) {
                           await groupProvider.createGroup(_nameController.text, uid);
-                          // State will update and show the code view since currentGroup is no longer null
-                        }
+                          }
                       }
                     },
                     style: ElevatedButton.styleFrom(

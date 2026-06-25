@@ -6,7 +6,6 @@ class LocationService {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Verifica se os serviços de localização estão ativados.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       return null;
@@ -32,8 +31,6 @@ class LocationService {
       List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
       if (placemarks.isNotEmpty) {
         final place = placemarks[0];
-        // No Brasil, subAdministrativeArea costuma representar a cidade melhor do que locality em alguns casos,
-        // mas locality é o padrão.
         return place.locality ?? place.subAdministrativeArea;
       }
     } catch (e) {

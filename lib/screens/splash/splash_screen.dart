@@ -13,43 +13,77 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  bool _navigating = false;
+
   @override
   void initState() {
     super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeIn,
+    );
+    _animationController.forward();
+
     _checkAuthAndNavigate();
   }
 
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   Future<void> _checkAuthAndNavigate() async {
-    // Wait for at least 2 seconds for the splash screen animation
     await Future.delayed(const Duration(seconds: 2));
 
     if (!mounted) return;
 
+    _navigateOrWait();
+  }
+
+  void _navigateOrWait() {
     final authProvider = context.read<AuthProvider>();
     
-    // AuthProvider initializes and listens to authStateChanges.
-    // If we have a user, it might take a split second to fetch the userModel.
-    // We can wait a tiny bit to see if userModel is populated if user is not null.
     if (authProvider.currentUser != null && authProvider.userModel == null) {
-      // Small delay to allow the Firestore fetch to complete in AuthProvider constructor
-      await Future.delayed(const Duration(milliseconds: 500));
+      authProvider.addListener(_authListener);
+    } else {
+      _navigate(authProvider);
     }
+  }
 
-    if (!mounted) return;
+  void _authListener() {
+    final authProvider = context.read<AuthProvider>();
+    if (authProvider.currentUser == null || authProvider.userModel != null) {
+      authProvider.removeListener(_authListener);
+      _navigate(authProvider);
+    }
+  }
+
+  Future<void> _navigate(AuthProvider authProvider) async {
+    if (_navigating || !mounted) return;
+    _navigating = true;
 
     if (authProvider.currentUser == null) {
       Navigator.pushReplacementNamed(context, AppRoutes.login);
     } else {
-      // User is logged in
       final userModel = authProvider.userModel;
       if (userModel != null && userModel.groupId.isNotEmpty) {
-        // Load group data before going to home
         final groupProvider = context.read<GroupProvider>();
         await groupProvider.loadGroup(userModel.groupId);
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        }
       } else {
-        Navigator.pushReplacementNamed(context, AppRoutes.group);
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, AppRoutes.group);
+        }
       }
     }
   }
@@ -66,16 +100,17 @@ class _SplashScreenState extends State<SplashScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Spacer(),
-                // Connected points illustration simulation
-                CustomPaint(
-                  size: const Size(120, 120),
-                  painter: ConnectionPainter(),
+                FadeTransition(
+                  opacity: _animation,
+                  child: CustomPaint(
+                    size: const Size(120, 120),
+                    painter: ConnectionPainter(),
+                  ),
                 ),
                 const SizedBox(height: 40),
                 const Text(
                   'Laço',
                   style: TextStyle(
-                    fontFamily: 'Nunito',
                     fontSize: 48,
                     fontWeight: FontWeight.bold,
                     color: AppColors.coralSuave,
@@ -87,7 +122,6 @@ class _SplashScreenState extends State<SplashScreen> {
                   'Quem está longe ainda pode fazer parte do seu dia.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontFamily: 'Inter',
                     fontSize: 16,
                     color: AppColors.carvao.withOpacity(0.8),
                     height: 1.4,
@@ -117,12 +151,10 @@ class ConnectionPainter extends CustomPainter {
 
     final dotPaint = Paint()..color = AppColors.coralSuave;
 
-    // Draw connection lines
     canvas.drawLine(Offset(size.width * 0.2, size.height * 0.3), Offset(size.width * 0.8, size.height * 0.2), paint);
     canvas.drawLine(Offset(size.width * 0.2, size.height * 0.3), Offset(size.width * 0.5, size.height * 0.7), paint);
     canvas.drawLine(Offset(size.width * 0.8, size.height * 0.2), Offset(size.width * 0.5, size.height * 0.7), paint);
 
-    // Draw dots representing people
     canvas.drawCircle(Offset(size.width * 0.2, size.height * 0.3), 8.0, dotPaint);
     canvas.drawCircle(Offset(size.width * 0.8, size.height * 0.2), 8.0, dotPaint);
     canvas.drawCircle(Offset(size.width * 0.5, size.height * 0.7), 10.0, Paint()..color = AppColors.verdeSalvia);

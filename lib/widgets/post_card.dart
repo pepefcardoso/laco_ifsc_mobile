@@ -34,7 +34,6 @@ class PostCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Author Header
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -57,7 +56,6 @@ class PostCard extends StatelessWidget {
               ],
             ),
           ),
-          // Image Area
           AspectRatio(
             aspectRatio: 4 / 3,
             child: Container(
@@ -65,7 +63,6 @@ class PostCard extends StatelessWidget {
               child: const Icon(Icons.image, size: 48, color: AppColors.cinzaMorno),
             ),
           ),
-          // Footer / Description
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(

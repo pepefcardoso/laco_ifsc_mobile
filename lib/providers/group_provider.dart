@@ -35,7 +35,6 @@ class GroupProvider with ChangeNotifier {
     notifyListeners();
     
     try {
-      // 1. Generate unique code (with collision check)
       String code = _generateCode();
       bool isUnique = false;
       while (!isUnique) {
@@ -47,7 +46,6 @@ class GroupProvider with ChangeNotifier {
         }
       }
 
-      // 2. Create GroupModel
       final groupId = FirebaseFirestore.instance.collection('groups').doc().id;
       final newGroup = GroupModel(
         id: groupId,
@@ -58,12 +56,8 @@ class GroupProvider with ChangeNotifier {
         createdAt: Timestamp.now(),
       );
 
-      // 3. Save to Firestore
       await _firestoreService.createGroup(newGroup);
       
-      // 4. Update User's groupId (joinGroup does both: adds to group members array, and updates user's groupId)
-      // Since createGroup already added the user to the members array in step 2, 
-      // we only really need to update the user's document.
       await FirebaseFirestore.instance.collection('users').doc(userId).update({
         'groupId': groupId
       });
@@ -88,6 +82,14 @@ class GroupProvider with ChangeNotifier {
     notifyListeners();
     
     try {
+      final currentUserDoc = await _firestoreService.getUser(userId);
+      if (currentUserDoc != null && currentUserDoc.groupId.isNotEmpty) {
+        _errorMessage = 'Você já pertence a um grupo. Saia do grupo atual para entrar em outro.';
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+
       final group = await _firestoreService.getGroupByCode(code);
       if (group == null) {
         _isLoading = false;
@@ -97,7 +99,6 @@ class GroupProvider with ChangeNotifier {
       }
 
       if (group.members.contains(userId)) {
-        // Já está no grupo, apenas carrega
         _currentGroup = group;
         await _loadMembers(group.members);
         _isLoading = false;
@@ -105,10 +106,8 @@ class GroupProvider with ChangeNotifier {
         return true;
       }
 
-      // Adiciona usuário ao grupo
       await _firestoreService.joinGroup(group.id, userId);
       
-      // Atualiza o modelo local do grupo
       final updatedMembers = List<String>.from(group.members)..add(userId);
       _currentGroup = GroupModel(
         id: group.id,

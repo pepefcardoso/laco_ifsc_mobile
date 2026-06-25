@@ -89,7 +89,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                // Name field
                 TextFormField(
                   controller: _nameController,
                   enabled: !isLoading,
@@ -123,7 +122,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Email field
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -161,7 +159,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Password field
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
@@ -199,7 +196,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                // Register button
                 ElevatedButton(
                   onPressed: isLoading ? null : _submitRegister,
                   style: ElevatedButton.styleFrom(

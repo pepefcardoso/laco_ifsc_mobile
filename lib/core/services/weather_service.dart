@@ -14,7 +14,7 @@ class WeatherService {
         final data = json.decode(response.body);
         return {
           'temperature': data['main']['temp'],
-          'condition': data['weather'][0]['main'], // Ex: "Clear", "Clouds", "Rain"
+          'condition': data['weather'][0]['main'],
           'icon': data['weather'][0]['icon'],
         };
       }

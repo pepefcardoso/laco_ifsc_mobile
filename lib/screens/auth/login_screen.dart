@@ -109,7 +109,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 60),
-                // Email field
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -147,7 +146,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                // Password field
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
@@ -185,7 +183,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                // Login button
                 ElevatedButton(
                   onPressed: isLoading ? null : _submitLogin,
                   style: ElevatedButton.styleFrom(
@@ -214,7 +211,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                 ),
                 const SizedBox(height: 16),
-                // Google sign in button
                 OutlinedButton.icon(
                   onPressed: isLoading ? null : _submitGoogleLogin,
                   icon: const Icon(Icons.g_mobiledata, size: 30, color: AppColors.carvao),
@@ -235,7 +231,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 40),
-                // Link register
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
