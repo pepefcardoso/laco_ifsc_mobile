@@ -59,7 +59,7 @@ class ProfileScreen extends StatelessWidget {
               Center(
                 child: CircleAvatar(
                   radius: 48,
-                  backgroundColor: AppColors.azulSuave.withOpacity(0.2),
+                  backgroundColor: AppColors.azulSuave.withValues(alpha: 0.2),
                   child: const Text(
                     'U',
                     style: TextStyle(fontFamily: 'Nunito', fontSize: 36, fontWeight: FontWeight.bold, color: AppColors.azulSuave),
@@ -128,14 +128,14 @@ class ProfileScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.03),
+                          color: Colors.black.withValues(alpha: 0.03),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         )
                       ],
                     ),
                     child: Center(
-                      child: Icon(Icons.photo_outlined, color: AppColors.cinzaMorno.withOpacity(0.6), size: 32),
+                      child: Icon(Icons.photo_outlined, color: AppColors.cinzaMorno.withValues(alpha: 0.6), size: 32),
                     ),
                   );
                 },

@@ -109,7 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: AppColors.cinzaMorno.withOpacity(0.3), width: 1.0),
+                      borderSide: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.3), width: 1.0),
                     ),
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -146,7 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: AppColors.cinzaMorno.withOpacity(0.3), width: 1.0),
+                      borderSide: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.3), width: 1.0),
                     ),
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -183,7 +183,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: AppColors.cinzaMorno.withOpacity(0.3), width: 1.0),
+                      borderSide: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.3), width: 1.0),
                     ),
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -202,7 +202,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     backgroundColor: AppColors.azulSuave,
                     foregroundColor: AppColors.brancoPuro,
                     elevation: 2,
-                    shadowColor: Colors.black.withOpacity(0.06),
+                    shadowColor: Colors.black.withValues(alpha: 0.06),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),

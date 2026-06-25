@@ -48,7 +48,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
+                        color: Colors.black.withValues(alpha: 0.04),
                         blurRadius: 16,
                         offset: const Offset(0, 4),
                       )
@@ -57,7 +57,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.add_a_photo_outlined, size: 64, color: AppColors.azulSuave.withOpacity(0.8)),
+                      Icon(Icons.add_a_photo_outlined, size: 64, color: AppColors.azulSuave.withValues(alpha: 0.8)),
                       const SizedBox(height: 16),
                       const Text(
                         'Escolha uma foto do seu dia',
@@ -109,7 +109,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: AppColors.cinzaMorno.withOpacity(0.2), width: 1.0),
+                    borderSide: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.2), width: 1.0),
                   ),
                 ),
               ),

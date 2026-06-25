@@ -64,7 +64,7 @@ class FeedScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
+                            color: Colors.black.withValues(alpha: 0.04),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           )
@@ -75,7 +75,7 @@ class FeedScreen extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             radius: 20,
-                            backgroundColor: AppColors.azulSuave.withOpacity(0.2),
+                            backgroundColor: AppColors.azulSuave.withValues(alpha: 0.2),
                             child: Text(names[index][0], style: const TextStyle(fontWeight: FontWeight.bold)),
                           ),
                           const SizedBox(height: 6),
@@ -125,7 +125,7 @@ class FeedScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.06),
+                          color: Colors.black.withValues(alpha: 0.06),
                           blurRadius: 16,
                           offset: const Offset(0, 4),
                         ),
@@ -138,7 +138,7 @@ class FeedScreen extends StatelessWidget {
                           aspectRatio: 4 / 3,
                           child: Container(
                             decoration: BoxDecoration(
-                              color: AppColors.cinzaMorno.withOpacity(0.2),
+                              color: AppColors.cinzaMorno.withValues(alpha: 0.2),
                               borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
                             ),
                             child: const Center(

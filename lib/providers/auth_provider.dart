@@ -59,7 +59,10 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
     
     try {
-      await _authService.signInWithEmail(email, password);
+      final credential = await _authService.signInWithEmail(email, password);
+      if (credential != null && credential.user != null) {
+        _userModel = await _firestoreService.getUser(credential.user!.uid);
+      }
       _isLoading = false;
       notifyListeners();
       return true;

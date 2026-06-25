@@ -24,7 +24,7 @@ class MemberCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           )
@@ -34,7 +34,7 @@ class MemberCard extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 24,
-            backgroundColor: AppColors.azulSuave.withOpacity(0.2),
+            backgroundColor: AppColors.azulSuave.withValues(alpha: 0.2),
             child: Text(name[0], style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.azulSuave)),
           ),
           const SizedBox(width: 12),

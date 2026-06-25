@@ -123,7 +123,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
-                    color: AppColors.carvao.withOpacity(0.8),
+                    color: AppColors.carvao.withValues(alpha: 0.8),
                     height: 1.4,
                   ),
                 ),
@@ -145,7 +145,7 @@ class ConnectionPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.azulSuave.withOpacity(0.4)
+      ..color = AppColors.azulSuave.withValues(alpha: 0.4)
       ..strokeWidth = 2.0
       ..strokeCap = StrokeCap.round;
 

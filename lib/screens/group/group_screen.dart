@@ -92,9 +92,9 @@ class _GroupScreenState extends State<GroupScreen> {
           child: Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: AppColors.azulSuave.withOpacity(0.15),
+              color: AppColors.azulSuave.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: AppColors.azulSuave.withOpacity(0.3), width: 1.5),
+              border: Border.all(color: AppColors.azulSuave.withValues(alpha: 0.3), width: 1.5),
             ),
             child: Row(
               children: [
@@ -133,9 +133,9 @@ class _GroupScreenState extends State<GroupScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.coralSuave.withOpacity(0.1),
+              color: AppColors.coralSuave.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.coralSuave.withOpacity(0.5)),
+              border: Border.all(color: AppColors.coralSuave.withValues(alpha: 0.5)),
             ),
             child: Row(
               children: [
@@ -155,9 +155,9 @@ class _GroupScreenState extends State<GroupScreen> {
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: AppColors.verdeSalvia.withOpacity(0.15),
+            color: AppColors.verdeSalvia.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: AppColors.verdeSalvia.withOpacity(0.3), width: 1.5),
+            border: Border.all(color: AppColors.verdeSalvia.withValues(alpha: 0.3), width: 1.5),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -208,7 +208,7 @@ class _GroupScreenState extends State<GroupScreen> {
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: AppColors.cinzaMorno.withOpacity(0.2), width: 1.0),
+                    borderSide: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.2), width: 1.0),
                   ),
                 ),
               ),
@@ -238,9 +238,10 @@ class _GroupScreenState extends State<GroupScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
+      ],
+    ),
+  );
+}
 
   Widget _buildCodeCreatedView() {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -274,9 +275,9 @@ class _GroupScreenState extends State<GroupScreen> {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: AppColors.azulSuave.withOpacity(0.15),
+                color: AppColors.azulSuave.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: AppColors.azulSuave.withOpacity(0.3), width: 1.5),
+                border: Border.all(color: AppColors.azulSuave.withValues(alpha: 0.3), width: 1.5),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -299,7 +300,7 @@ class _GroupScreenState extends State<GroupScreen> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(14),
-                        borderSide: BorderSide(color: AppColors.cinzaMorno.withOpacity(0.2), width: 1.0),
+                        borderSide: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.2), width: 1.0),
                       ),
                     ),
                   ),
@@ -368,7 +369,7 @@ class _GroupScreenState extends State<GroupScreen> {
           decoration: BoxDecoration(
             color: AppColors.brancoPuro,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.cinzaMorno.withOpacity(0.2)),
+            border: Border.all(color: AppColors.cinzaMorno.withValues(alpha: 0.2)),
           ),
           child: Center(
             child: Text(

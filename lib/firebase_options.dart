@@ -54,19 +54,19 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyA-MOCK-ANDROID-KEY-12345',
-    appId: '1:1234567890:android:1234567890abcdef',
-    messagingSenderId: '1234567890',
-    projectId: 'laco-ifsc-mobile',
-    storageBucket: 'laco-ifsc-mobile.appspot.com',
+    apiKey: 'AIzaSyB3EWTMb0x55sjQ225HIQJBKFvJYt0RXsw',
+    appId: '1:510383029326:android:8f92703677b464fba2d71f',
+    messagingSenderId: '510383029326',
+    projectId: 'lacomobileapp',
+    storageBucket: 'lacomobileapp.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA-MOCK-IOS-KEY-12345',
-    appId: '1:1234567890:ios:1234567890abcdef',
-    messagingSenderId: '1234567890',
-    projectId: 'laco-ifsc-mobile',
-    storageBucket: 'laco-ifsc-mobile.appspot.com',
+    apiKey: 'AIzaSyAERnQFczGYeuc92YyTi7J6YiUyVidAlEg',
+    appId: '1:510383029326:ios:c0b5ddd0d2eeee04a2d71f',
+    messagingSenderId: '510383029326',
+    projectId: 'lacomobileapp',
+    storageBucket: 'lacomobileapp.firebasestorage.app',
+    iosClientId: '510383029326-3ct67s9ei8tmq9ggfbtumb8lknc7catg.apps.googleusercontent.com',
     iosBundleId: 'com.example.lacoIfscMobile',
   );
 }

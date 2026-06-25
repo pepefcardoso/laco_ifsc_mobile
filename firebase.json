@@ -1,0 +1,1 @@
+{"flutter":{"platforms":{"android":{"default":{"projectId":"lacomobileapp","appId":"1:510383029326:android:8f92703677b464fba2d71f","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"lacomobileapp","configurations":{"android":"1:510383029326:android:8f92703677b464fba2d71f","ios":"1:510383029326:ios:c0b5ddd0d2eeee04a2d71f"}}}}}}

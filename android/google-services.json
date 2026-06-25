@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "510383029326",
+    "project_id": "lacomobileapp",
+    "storage_bucket": "lacomobileapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:510383029326:android:8f92703677b464fba2d71f",
+        "android_client_info": {
+          "package_name": "com.example.laco_ifsc_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "510383029326-l1v2p2a7ando5mu0b10ocuhnqp0kube2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3EWTMb0x55sjQ225HIQJBKFvJYt0RXsw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510383029326-l1v2p2a7ando5mu0b10ocuhnqp0kube2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "510383029326-3ct67s9ei8tmq9ggfbtumb8lknc7catg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lacoIfscMobile"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:510383029326:android:77f7db5c1eccc702a2d71f",
+        "android_client_info": {
+          "package_name": "com.ifsc.laco"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "510383029326-l1v2p2a7ando5mu0b10ocuhnqp0kube2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3EWTMb0x55sjQ225HIQJBKFvJYt0RXsw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510383029326-l1v2p2a7ando5mu0b10ocuhnqp0kube2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "510383029326-3ct67s9ei8tmq9ggfbtumb8lknc7catg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lacoIfscMobile"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

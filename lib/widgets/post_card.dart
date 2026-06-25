@@ -25,7 +25,7 @@ class PostCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -59,7 +59,7 @@ class PostCard extends StatelessWidget {
           AspectRatio(
             aspectRatio: 4 / 3,
             child: Container(
-              color: AppColors.cinzaMorno.withOpacity(0.1),
+              color: AppColors.cinzaMorno.withValues(alpha: 0.1),
               child: const Icon(Icons.image, size: 48, color: AppColors.cinzaMorno),
             ),
           ),

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_routes.dart';
 import '../../providers/auth_provider.dart';
-
+import '../../providers/group_provider.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -34,7 +34,11 @@ class _LoginScreenState extends State<LoginScreen> {
       if (success && mounted) {
         final userModel = authProvider.userModel;
         if (userModel != null && userModel.groupId.isNotEmpty) {
-          Navigator.pushReplacementNamed(context, AppRoutes.home);
+          final groupProvider = context.read<GroupProvider>();
+          await groupProvider.loadGroup(userModel.groupId);
+          if (mounted) {
+            Navigator.pushReplacementNamed(context, AppRoutes.home);
+          }
         } else {
           Navigator.pushReplacementNamed(context, AppRoutes.group);
         }
@@ -56,7 +60,11 @@ class _LoginScreenState extends State<LoginScreen> {
     if (success && mounted) {
       final userModel = authProvider.userModel;
       if (userModel != null && userModel.groupId.isNotEmpty) {
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
+        final groupProvider = context.read<GroupProvider>();
+        await groupProvider.loadGroup(userModel.groupId);
+        if (mounted) {
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        }
       } else {
         Navigator.pushReplacementNamed(context, AppRoutes.group);
       }
@@ -133,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: AppColors.cinzaMorno.withOpacity(0.3), width: 1.0),
+                      borderSide: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.3), width: 1.0),
                     ),
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -170,7 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: AppColors.cinzaMorno.withOpacity(0.3), width: 1.0),
+                      borderSide: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.3), width: 1.0),
                     ),
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -189,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     backgroundColor: AppColors.azulSuave,
                     foregroundColor: AppColors.brancoPuro,
                     elevation: 2,
-                    shadowColor: Colors.black.withOpacity(0.06),
+                    shadowColor: Colors.black.withValues(alpha: 0.06),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
@@ -223,7 +231,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: AppColors.cinzaMorno.withOpacity(0.4)),
+                    side: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.4)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
