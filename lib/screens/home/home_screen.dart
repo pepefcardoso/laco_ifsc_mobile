@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/location_provider.dart';
 import '../feed/feed_screen.dart';
 import '../map/map_screen.dart';
 import '../profile/profile_screen.dart';
@@ -19,6 +22,17 @@ class _HomeScreenState extends State<HomeScreen> {
     MapScreen(),
     ProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = context.read<AuthProvider>();
+      if (authProvider.currentUser != null) {
+        context.read<LocationProvider>().updateLocationAndWeather(authProvider.currentUser!.uid);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
