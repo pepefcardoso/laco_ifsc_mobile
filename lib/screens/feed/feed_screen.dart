@@ -7,7 +7,10 @@ import '../../core/utils/date_formatter.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/feed_provider.dart';
 import '../../providers/group_provider.dart';
+import '../../providers/hug_provider.dart';
 import '../../widgets/post_card.dart';
+import '../../widgets/hug_feed_card.dart';
+import '../../widgets/online_indicator.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -22,8 +25,12 @@ class _FeedScreenState extends State<FeedScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final group = context.read<GroupProvider>().currentGroup;
+      final userId = context.read<AuthProvider>().currentUser?.uid;
       if (group != null) {
         context.read<FeedProvider>().loadPosts(group.id);
+        if (userId != null) {
+          context.read<HugProvider>().loadReceivedHugs(group.id, userId);
+        }
       }
     });
   }
@@ -33,10 +40,12 @@ class _FeedScreenState extends State<FeedScreen> {
     final authProvider = context.watch<AuthProvider>();
     final groupProvider = context.watch<GroupProvider>();
     final feedProvider = context.watch<FeedProvider>();
+    final hugProvider = context.watch<HugProvider>();
     
     final currentUserId = authProvider.currentUser?.uid ?? '';
     final groupId = groupProvider.currentGroup?.id ?? '';
     final members = groupProvider.members;
+    final receivedHugs = hugProvider.receivedHugs;
 
     return Scaffold(
       backgroundColor: AppColors.creme,
@@ -64,6 +73,9 @@ class _FeedScreenState extends State<FeedScreen> {
         onRefresh: () async {
           if (groupId.isNotEmpty) {
             feedProvider.loadPosts(groupId);
+            if (currentUserId.isNotEmpty) {
+              hugProvider.loadReceivedHugs(groupId, currentUserId);
+            }
           }
         },
         color: AppColors.azulSuave,
@@ -94,6 +106,8 @@ class _FeedScreenState extends State<FeedScreen> {
                       separatorBuilder: (context, index) => const SizedBox(width: 12),
                       itemBuilder: (context, index) {
                         final member = members[index];
+                        final isOnline = member.lastSeen != null &&
+                            DateTime.now().difference(member.lastSeen!.toDate()).inMinutes < 120;
                         return Container(
                           width: 100,
                           padding: const EdgeInsets.all(12),
@@ -111,13 +125,22 @@ class _FeedScreenState extends State<FeedScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundColor: AppColors.azulSuave.withValues(alpha: 0.2),
-                                backgroundImage: member.photoUrl.isNotEmpty ? CachedNetworkImageProvider(member.photoUrl) : null,
-                                child: member.photoUrl.isEmpty
-                                    ? Text(member.name.isNotEmpty ? member.name[0].toUpperCase() : '?', style: const TextStyle(fontWeight: FontWeight.bold))
-                                    : null,
+                              Stack(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: AppColors.azulSuave.withValues(alpha: 0.2),
+                                    backgroundImage: member.photoUrl.isNotEmpty ? CachedNetworkImageProvider(member.photoUrl) : null,
+                                    child: member.photoUrl.isEmpty
+                                        ? Text(member.name.isNotEmpty ? member.name[0].toUpperCase() : '?', style: const TextStyle(fontWeight: FontWeight.bold))
+                                        : null,
+                                  ),
+                                  Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    child: OnlineIndicator(isOnline: isOnline),
+                                  ),
+                                ],
                               ),
                               const SizedBox(height: 6),
                               Text(
@@ -136,6 +159,33 @@ class _FeedScreenState extends State<FeedScreen> {
                         );
                       },
                     ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+                // --- Received Hugs Section ---
+                if (receivedHugs.isNotEmpty) ...[
+                  const Text(
+                    'Abraços Recebidos',
+                    style: TextStyle(
+                      fontFamily: 'Nunito',
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.carvao,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: receivedHugs.length > 5 ? 5 : receivedHugs.length,
+                    separatorBuilder: (context, index) => const SizedBox(height: 10),
+                    itemBuilder: (context, index) {
+                      final hug = receivedHugs[index];
+                      return HugFeedCard(
+                        senderName: hug.fromName,
+                        sentAt: hug.sentAt.toDate(),
+                      );
+                    },
                   ),
                   const SizedBox(height: 24),
                 ],

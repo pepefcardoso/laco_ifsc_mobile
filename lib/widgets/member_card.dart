@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../core/constants/app_colors.dart';
+import 'online_indicator.dart';
 
 class MemberCard extends StatelessWidget {
   final String name;
   final String city;
   final String weather;
   final String? avatarUrl;
+  final String uid;
+  final Timestamp? lastSeen;
 
   const MemberCard({
     super.key,
@@ -13,10 +18,16 @@ class MemberCard extends StatelessWidget {
     required this.city,
     required this.weather,
     this.avatarUrl,
+    required this.uid,
+    this.lastSeen,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Online if last seen within 2 hours
+    final isOnline = lastSeen != null &&
+        DateTime.now().difference(lastSeen!.toDate()).inMinutes < 120;
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -32,10 +43,24 @@ class MemberCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 24,
-            backgroundColor: AppColors.azulSuave.withValues(alpha: 0.2),
-            child: Text(name[0], style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.azulSuave)),
+          Stack(
+            children: [
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: AppColors.azulSuave.withValues(alpha: 0.2),
+                backgroundImage: avatarUrl != null && avatarUrl!.isNotEmpty
+                    ? CachedNetworkImageProvider(avatarUrl!)
+                    : null,
+                child: (avatarUrl == null || avatarUrl!.isEmpty)
+                    ? Text(name[0], style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.azulSuave))
+                    : null,
+              ),
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: OnlineIndicator(isOnline: isOnline),
+              ),
+            ],
           ),
           const SizedBox(width: 12),
           Expanded(

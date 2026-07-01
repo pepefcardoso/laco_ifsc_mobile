@@ -9,6 +9,7 @@ import '../../providers/group_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../widgets/weather_badge.dart';
 import '../../widgets/online_indicator.dart';
+import '../../widgets/hug_button.dart';
 import '../../models/member_location_data.dart';
 
 class MapScreen extends StatefulWidget {
@@ -50,7 +51,10 @@ class _MapScreenState extends State<MapScreen> {
         : 'Desconhecido';
         
     final isOnline = member.lastSeen != null && 
-        DateTime.now().difference(member.lastSeen!.toDate()).inMinutes < 15;
+        DateTime.now().difference(member.lastSeen!.toDate()).inMinutes < 120;
+
+    final currentUserId = context.read<AuthProvider>().currentUser?.uid ?? '';
+    final groupId = context.read<GroupProvider>().currentGroup?.id ?? '';
 
     return Container(
       padding: const EdgeInsets.all(24),
@@ -118,6 +122,17 @@ class _MapScreenState extends State<MapScreen> {
               temperature: member.temperature!,
               weatherIcon: member.weatherIcon!,
             ),
+          if (member.id != currentUserId && groupId.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: HugButton(
+                targetUid: member.id,
+                targetName: member.name,
+                groupId: groupId,
+              ),
+            ),
+          ],
         ],
       ),
     );

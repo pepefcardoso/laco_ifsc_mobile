@@ -114,4 +114,44 @@ class FirestoreService {
   Future<void> sendHug(HugModel hug) async {
     await _db.collection('groups').doc(hug.groupId).collection('hugs').doc(hug.id).set(hug.toMap());
   }
+
+  /// Returns the most recent hug sent from [fromUid] to [toUid] within the
+  /// last hour, or null if no such hug exists. Used for the 1-hour cooldown.
+  Future<HugModel?> getLastHugBetween(String groupId, String fromUid, String toUid) async {
+    final oneHourAgo = Timestamp.fromDate(
+      DateTime.now().subtract(const Duration(hours: 1)),
+    );
+
+    final query = await _db
+        .collection('groups')
+        .doc(groupId)
+        .collection('hugs')
+        .where('fromUid', isEqualTo: fromUid)
+        .where('toUid', isEqualTo: toUid)
+        .where('sentAt', isGreaterThan: oneHourAgo)
+        .orderBy('sentAt', descending: true)
+        .limit(1)
+        .get();
+
+    if (query.docs.isNotEmpty) {
+      return HugModel.fromMap(query.docs.first.data(), query.docs.first.id);
+    }
+    return null;
+  }
+
+  /// Real-time stream of hugs received by [toUid] within the group,
+  /// ordered by most recent first. Used to populate the "abraços recebidos" feed.
+  Stream<List<HugModel>> getReceivedHugsStream(String groupId, String toUid) {
+    return _db
+        .collection('groups')
+        .doc(groupId)
+        .collection('hugs')
+        .where('toUid', isEqualTo: toUid)
+        .orderBy('sentAt', descending: true)
+        .limit(20)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => HugModel.fromMap(doc.data(), doc.id))
+            .toList());
+  }
 }
