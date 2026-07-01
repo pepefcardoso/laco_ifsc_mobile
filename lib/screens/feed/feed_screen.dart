@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_routes.dart';
 import '../../core/utils/date_formatter.dart';
@@ -9,8 +8,8 @@ import '../../providers/feed_provider.dart';
 import '../../providers/group_provider.dart';
 import '../../providers/hug_provider.dart';
 import '../../widgets/post_card.dart';
-import '../../widgets/hug_feed_card.dart';
-import '../../widgets/online_indicator.dart';
+import '../../widgets/member_row.dart';
+import '../../widgets/hugs_section.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -52,20 +51,14 @@ class _FeedScreenState extends State<FeedScreen> {
       appBar: AppBar(
         title: const Text(
           'Laço',
-          style: TextStyle(
-            fontFamily: 'Nunito',
-            fontWeight: FontWeight.bold,
-            color: AppColors.coralSuave,
-          ),
+          style: TextStyle(fontFamily: 'Nunito', fontWeight: FontWeight.bold, color: AppColors.coralSuave),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.add_photo_alternate_outlined, color: AppColors.azulSuave),
-            onPressed: () {
-              Navigator.pushNamed(context, AppRoutes.createPost);
-            },
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.createPost),
           ),
         ],
       ),
@@ -82,130 +75,20 @@ class _FeedScreenState extends State<FeedScreen> {
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: AppColors.paddingLateral),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 12),
-                if (members.isNotEmpty) ...[
-                  const Text(
-                    'Membros do Grupo',
-                    style: TextStyle(
-                      fontFamily: 'Nunito',
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.carvao,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    height: 110,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: members.length,
-                      separatorBuilder: (context, index) => const SizedBox(width: 12),
-                      itemBuilder: (context, index) {
-                        final member = members[index];
-                        final isOnline = member.lastSeen != null &&
-                            DateTime.now().difference(member.lastSeen!.toDate()).inMinutes < 120;
-                        return Container(
-                          width: 100,
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: AppColors.brancoPuro,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.04),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              )
-                            ],
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Stack(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor: AppColors.azulSuave.withValues(alpha: 0.2),
-                                    backgroundImage: member.photoUrl.isNotEmpty ? CachedNetworkImageProvider(member.photoUrl) : null,
-                                    child: member.photoUrl.isEmpty
-                                        ? Text(member.name.isNotEmpty ? member.name[0].toUpperCase() : '?', style: const TextStyle(fontWeight: FontWeight.bold))
-                                        : null,
-                                  ),
-                                  Positioned(
-                                    right: 0,
-                                    bottom: 0,
-                                    child: OnlineIndicator(isOnline: isOnline),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                member.name,
-                                style: const TextStyle(fontFamily: 'Inter', fontSize: 12, fontWeight: FontWeight.bold),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              // TODO: Integrate actual weather later. For now placeholder if needed or blank.
-                              const Text(
-                                '-',
-                                style: TextStyle(fontFamily: 'Inter', fontSize: 8, color: AppColors.cinzaMorno),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                ],
-                // --- Received Hugs Section ---
-                if (receivedHugs.isNotEmpty) ...[
-                  const Text(
-                    'Abraços Recebidos',
-                    style: TextStyle(
-                      fontFamily: 'Nunito',
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.carvao,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: receivedHugs.length > 5 ? 5 : receivedHugs.length,
-                    separatorBuilder: (context, index) => const SizedBox(height: 10),
-                    itemBuilder: (context, index) {
-                      final hug = receivedHugs[index];
-                      return HugFeedCard(
-                        senderName: hug.fromName,
-                        sentAt: hug.sentAt.toDate(),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 24),
-                ],
+                MemberRow(members: members),
+                HugsSection(receivedHugs: receivedHugs),
                 const Text(
                   'Momentos Recentes',
-                  style: TextStyle(
-                    fontFamily: 'Nunito',
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.carvao,
-                  ),
+                  style: TextStyle(fontFamily: 'Nunito', fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.carvao),
                 ),
                 const SizedBox(height: 12),
                 if (feedProvider.isLoading && feedProvider.posts.isEmpty)
-                  const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(32.0),
-                      child: CircularProgressIndicator(color: AppColors.azulSuave),
-                    ),
-                  )
+                  const Center(child: Padding(padding: EdgeInsets.all(32.0), child: CircularProgressIndicator(color: AppColors.azulSuave)))
                 else if (feedProvider.posts.isEmpty)
                   Center(
                     child: Padding(
@@ -214,15 +97,10 @@ class _FeedScreenState extends State<FeedScreen> {
                         children: [
                           Icon(Icons.photo_library_outlined, size: 64, color: AppColors.cinzaMorno.withValues(alpha: 0.5)),
                           const SizedBox(height: 16),
-                          const Text(
-                            'Nenhum momento ainda.',
-                            style: TextStyle(fontFamily: 'Inter', color: AppColors.cinzaMorno, fontSize: 16),
-                          ),
+                          const Text('Nenhum momento ainda.', style: TextStyle(fontFamily: 'Inter', color: AppColors.cinzaMorno, fontSize: 16)),
                           const SizedBox(height: 8),
                           TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, AppRoutes.createPost);
-                            },
+                            onPressed: () => Navigator.pushNamed(context, AppRoutes.createPost),
                             child: const Text('Seja o primeiro a postar!', style: TextStyle(color: AppColors.azulSuave)),
                           )
                         ],
@@ -238,21 +116,15 @@ class _FeedScreenState extends State<FeedScreen> {
                     itemBuilder: (context, index) {
                       final post = feedProvider.posts[index];
                       final author = members.cast<dynamic>().firstWhere((m) => m.id == post.authorId, orElse: () => null);
-                      final authorName = author?.name ?? 'Desconhecido';
-                      final authorPhotoUrl = author?.photoUrl ?? '';
-                      final timeAgo = DateFormatter.formatRelative(post.createdAt.toDate());
-
                       return PostCard(
-                        authorName: authorName,
-                        authorPhotoUrl: authorPhotoUrl,
+                        authorName: author?.name ?? 'Desconhecido',
+                        authorPhotoUrl: author?.photoUrl ?? '',
                         imageUrl: post.imageUrl,
                         caption: post.caption,
-                        timeAgo: timeAgo,
+                        timeAgo: DateFormatter.formatRelative(post.createdAt.toDate()),
                         reactions: post.reactions,
                         currentUserId: currentUserId,
-                        onReact: (emoji) {
-                          feedProvider.reactToPost(post.id, currentUserId, emoji, groupId);
-                        },
+                        onReact: (emoji) => feedProvider.reactToPost(post.id, currentUserId, emoji, groupId),
                       );
                     },
                   ),

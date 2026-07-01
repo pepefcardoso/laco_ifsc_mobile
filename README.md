@@ -1,74 +1,100 @@
 # Laço
 
-App para famílias e amigos distantes se sentirem presentes no dia a dia uns dos outros.
+App móvel projetado para conectar famílias e amigos distantes de forma afetuosa e não intrusiva. Sinta-se presente no dia a dia de quem você ama, mesmo de longe.
 
-## Integrantes do Grupo
+**Conceito Visual:** Suave como uma ligação de voz, íntimo como uma foto na geladeira.
+
+## 🔗 Protótipos
+Confira o fluxo e telas do aplicativo no nosso Figma (ou pasta de documentação):
+[Acessar Protótipos no Figma](https://www.figma.com/dummy-link-laco-app)
+*(Nota: screenshots e fluxos adicionais podem ser encontrados em `docs/prototype/`)*
+
+---
+
+## 👥 Integrantes do Grupo
 - **Artur**
 - **pepefcardoso** (Pedro Cardoso)
 
-## Features mapeadas por requisito
+---
+
+## ✨ Funcionalidades (Features)
+
+Abaixo estão os requisitos solicitados e como os implementamos:
 
 | Requisito | Implementação |
 |------------|---------------|
-| Navegação com rotas nomeadas | Login → Home → Feed → Mapa → Perfil → Grupo |
-| Gerenciamento de estado (Provider) | Sessão do usuário, feed, membros do grupo |
-| Autenticação (Firebase) | Login/cadastro com e-mail ou Google |
-| Armazenamento (Firebase) | Firestore para dados, Storage para mídia |
-| Sensor (GPS) | Mapa mostrando onde cada membro está (última localização) |
-| Widgets próprios | Card de membro, bolinha de status, post card |
-| API externa (criatividade) | OpenWeather para ver o clima atual de onde cada familiar está |
-| Animação (criatividade) | Animação ao enviar um "abraço virtual" |
+| **Navegação com rotas nomeadas** | Fluxo organizado: Login → Home → Feed → Mapa → Perfil → Grupo |
+| **Gerenciamento de estado (Provider)** | Utilizado extensivamente: AuthProvider, FeedProvider, GroupProvider, LocationProvider e ProfileProvider |
+| **Autenticação (Firebase)** | Login e cadastro completos usando Firebase Auth (E-mail/Senha e Google) |
+| **Armazenamento (Firebase)** | Cloud Firestore para dados (usuários, posts, grupos) e Firebase Storage para imagens (fotos de post e perfil) |
+| **Sensor (GPS)** | Geolocator integrado. A aba "Mapa" exibe a última localização conhecida de cada membro do grupo |
+| **Widgets próprios** | Mais de 7 widgets encapsulados e reutilizáveis (e.g. `MemberRow`, `PostCard`, `WeatherBadge`, `HugButton`) garantindo que as telas tenham menos de 200 linhas |
+| **API externa (criatividade)** | Integração com OpenWeatherMap API para exibir clima (temperatura e ícone) na cidade atual de cada membro |
+| **Animação (criatividade)** | Lottie animations utilizadas para enviar um "Abraço Virtual" com feedback tátil, exibido em tempo real no feed |
+| **Tratamento Offline/Assíncrono** | Tratamento robusto de Loading/Error states em todas as chamadas e suporte a cache local via `cached_network_image` |
 
 ---
 
-## Telas
+## 🛠️ Stack Tecnológica
 
-### Splash / Onboarding
-Apresentação do app.
-
-### Login / Cadastro
-Firebase Auth.
-
-### Home / Feed
-Linha do tempo com posts/momentos do grupo (foto + legenda + reação).
-
-### Mapa do grupo
-Mapa com pins de cada membro (GPS + cidade/clima via API).
-
-### Publicar momento
-Câmera ou galeria + legenda.
-
-### Perfil
-Foto, nome, última localização, histórico de momentos.
-
-### Configurações do grupo
-Criar/entrar em grupo via código.
+- **Framework:** Flutter (Dart)
+- **Gerenciamento de Estado:** Provider
+- **Backend as a Service:** Firebase (Auth, Firestore, Storage)
+- **Localização:** `geolocator`, `geocoding`
+- **Mapas:** `google_maps_flutter`
+- **Clima:** OpenWeatherMap API
+- **Mídia:** `image_picker`, `cached_network_image`
+- **Animações:** `lottie`
 
 ---
 
-## Stack
+## 🚀 Como Rodar o Projeto
 
-- **Flutter + Provider** — estado global
-- **Firebase Auth** — autenticação
-- **Firestore** — posts, grupos, membros
-- **Firebase Storage** — fotos
-- **geolocator** — GPS
-- **OpenWeatherMap API** — clima por coordenada
-- **flutter_map** + tiles OpenStreetMap — mapa dos membros (sem API key)
+Siga os passos abaixo para testar o projeto localmente:
+
+### Pré-requisitos
+1. **Flutter SDK** instalado (versão `^3.11.5` ou compatível)
+2. **Android Studio** (com Android SDK) ou **Xcode** para iOS
+3. Conta no Firebase e no OpenWeatherMap (para obter as chaves de API, caso deseje compilar do zero)
+
+### Passo a Passo
+
+1. **Clonar o Repositório**
+   ```bash
+   git clone https://github.com/seu-usuario/laco_ifsc_mobile.git
+   cd laco_ifsc_mobile
+   ```
+
+2. **Instalar Dependências**
+   ```bash
+   flutter pub get
+   ```
+
+3. **Configuração do Firebase e Google Maps**
+   - O repositório já contém as bibliotecas necessárias.
+   - Você precisará adicionar o seu arquivo `google-services.json` (Android) na pasta `android/app/` e `GoogleService-Info.plist` (iOS) na pasta `ios/Runner/`.
+   - Adicione sua API Key do Google Maps no arquivo `android/app/src/main/AndroidManifest.xml` e no `ios/Runner/AppDelegate.swift`.
+
+4. **Executar o Aplicativo**
+   - Inicie um Emulador Android ou Simulador iOS.
+   - Execute o comando:
+   ```bash
+   flutter run
+   ```
 
 ---
 
-## Estrutura de pastas
+## 📁 Estrutura de Pastas
 
 ```text
 lib/
 ├── main.dart
 ├── firebase_options.dart
-├── app.dart                  # MaterialApp, rotas nomeadas, providers
+├── app.dart                  # Configuração de MaterialApp e rotas
 │
 ├── core/
 │   ├── constants/
-│   │   ├── app_colors.dart
+│   │   ├── app_colors.dart   # Design System (Cores, Espaçamento, Sombras)
 │   │   └── app_routes.dart
 │   ├── services/
 │   │   ├── auth_service.dart
@@ -83,121 +109,50 @@ lib/
 │   ├── user_model.dart
 │   ├── group_model.dart
 │   ├── post_model.dart
+│   ├── member_location_data.dart
 │   └── hug_model.dart
 │
 ├── providers/
 │   ├── auth_provider.dart
 │   ├── group_provider.dart
 │   ├── feed_provider.dart
+│   ├── profile_provider.dart
 │   └── location_provider.dart
 │
-├── screens/
-│   ├── splash/
-│   │   └── splash_screen.dart
-│   ├── auth/
-│   │   ├── login_screen.dart
-│   │   └── register_screen.dart
-│   ├── home/
-│   │   └── home_screen.dart        # BottomNav container
-│   ├── feed/
-│   │   ├── feed_screen.dart
-│   │   └── create_post_screen.dart
-│   ├── map/
-│   │   └── map_screen.dart
-│   ├── profile/
-│   │   └── profile_screen.dart
-│   └── group/
-│       └── group_screen.dart
+├── screens/                  # Todas as telas possuem < 200 linhas
+│   ├── auth/                 # login, register
+│   ├── feed/                 # feed_screen, create_post_screen
+│   ├── map/                  # map_screen
+│   ├── profile/              # profile_screen, edit_profile_sheet
+│   ├── group/                # group_screen
+│   └── splash/               # splash_screen
 │
-└── widgets/
-    ├── member_card.dart
+└── widgets/                  # Componentes reutilizáveis isolados
+    ├── member_row.dart
     ├── post_card.dart
-    ├── hug_button.dart             # animação Lottie
+    ├── hug_button.dart
     ├── weather_badge.dart
+    ├── map_header_card.dart
+    ├── member_bottom_sheet.dart
     └── online_indicator.dart
 ```
 
 ---
 
-## Models
+## 💾 Modelagem de Dados (Firestore)
 
-### UserModel
-
-```dart
-id, name, photoUrl, email, groupId, lastLocation (GeoPoint), lastSeen (Timestamp)
-```
-
-### GroupModel
-
-```dart
-id, name, code (6 chars), createdBy, members (List<String uid>), createdAt
-```
-
-### PostModel
-
-```dart
-id, authorId, groupId, imageUrl, caption, reactions (Map<uid, emoji>), createdAt
-```
-
-### HugModel
-
-```dart
-id, fromUid, toUid, groupId, sentAt
-```
-
----
-
-## Providers
-
-| Provider | Estado que gerencia |
-|-----------|---------------------|
-| `AuthProvider` | Usuário logado, login, logout, register |
-| `GroupProvider` | Grupo atual, membros, criar/entrar |
-| `FeedProvider` | Posts do grupo, criar post, reagir |
-| `LocationProvider` | Localização atual, atualizar no Firestore, clima via API |
-
----
-
-## Rotas nomeadas — `app_routes.dart`
-
-```dart
-/splash
-/login
-/register
-/home          # BottomNav (feed, map, profile)
-/create-post
-/group
-/profile/:uid
-```
-
----
-
-## Firestore — Coleções
+A estrutura NoSQL no Firebase está definida da seguinte forma:
 
 ```text
-users/
-  {uid}/
-    name, photoUrl, email, groupId, lastLocation, lastSeen
+users/ {uid}
+  name, photoUrl, email, groupId, lastLocation, lastSeen
 
-groups/
-  {groupId}/
-    name, code, createdBy, members[], createdAt
-    posts/
-      {postId}/
-        authorId, imageUrl, caption, reactions{}, createdAt
-    hugs/
-      {hugId}/
-        fromUid, toUid, sentAt
-```
-
----
-
-## Fluxo de navegação
-
-```text
-Splash
-  ├── (logado + tem grupo) → /home
-  ├── (logado + sem grupo) → /group
-  └── (não logado)         → /login
-                                └── /register
+groups/ {groupId}
+  name, code, createdBy, members[], createdAt
+  
+  posts/ {postId}
+    authorId, imageUrl, caption, reactions{}, createdAt
+    
+  hugs/ {hugId}
+    fromUid, toUid, sentAt
 ```

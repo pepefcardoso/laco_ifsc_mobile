@@ -4,6 +4,8 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_routes.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/group_provider.dart';
+import '../../widgets/auth_text_field.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -23,6 +25,23 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _handleSuccess(AuthProvider authProvider) async {
+    final userModel = authProvider.userModel;
+    if (userModel != null && userModel.groupId.isNotEmpty) {
+      final groupProvider = context.read<GroupProvider>();
+      await groupProvider.loadGroup(userModel.groupId);
+      if (mounted) Navigator.pushReplacementNamed(context, AppRoutes.home);
+    } else {
+      if (mounted) Navigator.pushReplacementNamed(context, AppRoutes.group);
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: AppColors.coralSuave),
+    );
+  }
+
   void _submitLogin() async {
     if (_formKey.currentState!.validate()) {
       final authProvider = context.read<AuthProvider>();
@@ -32,23 +51,9 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (success && mounted) {
-        final userModel = authProvider.userModel;
-        if (userModel != null && userModel.groupId.isNotEmpty) {
-          final groupProvider = context.read<GroupProvider>();
-          await groupProvider.loadGroup(userModel.groupId);
-          if (mounted) {
-            Navigator.pushReplacementNamed(context, AppRoutes.home);
-          }
-        } else {
-          Navigator.pushReplacementNamed(context, AppRoutes.group);
-        }
+        _handleSuccess(authProvider);
       } else if (mounted && authProvider.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(authProvider.errorMessage!),
-            backgroundColor: AppColors.coralSuave,
-          ),
-        );
+        _showError(authProvider.errorMessage!);
       }
     }
   }
@@ -58,23 +63,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final success = await authProvider.loginWithGoogle();
     
     if (success && mounted) {
-      final userModel = authProvider.userModel;
-      if (userModel != null && userModel.groupId.isNotEmpty) {
-        final groupProvider = context.read<GroupProvider>();
-        await groupProvider.loadGroup(userModel.groupId);
-        if (mounted) {
-          Navigator.pushReplacementNamed(context, AppRoutes.home);
-        }
-      } else {
-        Navigator.pushReplacementNamed(context, AppRoutes.group);
-      }
+      _handleSuccess(authProvider);
     } else if (mounted && authProvider.errorMessage != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(authProvider.errorMessage!),
-          backgroundColor: AppColors.coralSuave,
-        ),
-      );
+      _showError(authProvider.errorMessage!);
     }
   }
 
@@ -94,101 +85,35 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const SizedBox(height: 40),
                 const Center(
-                  child: Text(
-                    'Laço',
-                    style: TextStyle(
-                      fontFamily: 'Nunito',
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.coralSuave,
-                      letterSpacing: -1.0,
-                    ),
-                  ),
+                  child: Text('Laço', style: TextStyle(fontFamily: 'Nunito', fontSize: 40, fontWeight: FontWeight.bold, color: AppColors.coralSuave, letterSpacing: -1.0)),
                 ),
                 const SizedBox(height: 8),
                 const Center(
-                  child: Text(
-                    'Conecte-se com as pessoas que ama',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 14,
-                      color: AppColors.cinzaMorno,
-                    ),
-                  ),
+                  child: Text('Conecte-se com as pessoas que ama', style: TextStyle(fontFamily: 'Inter', fontSize: 14, color: AppColors.cinzaMorno)),
                 ),
                 const SizedBox(height: 60),
-                TextFormField(
+                AuthTextField(
                   controller: _emailController,
+                  labelText: 'E-mail',
                   keyboardType: TextInputType.emailAddress,
                   enabled: !isLoading,
                   validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Informe seu e-mail';
-                    }
-                    if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
-                      return 'Informe um e-mail válido';
-                    }
+                    if (value == null || value.trim().isEmpty) return 'Informe seu e-mail';
+                    if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) return 'Informe um e-mail válido';
                     return null;
                   },
-                  decoration: InputDecoration(
-                    labelText: 'E-mail',
-                    labelStyle: const TextStyle(fontFamily: 'Inter', color: AppColors.cinzaMorno),
-                    filled: true,
-                    fillColor: AppColors.brancoPuro,
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.azulSuave, width: 1.5),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.3), width: 1.0),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.coralSuave, width: 1.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.coralSuave, width: 1.5),
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
+                AuthTextField(
                   controller: _passwordController,
+                  labelText: 'Senha',
                   obscureText: true,
                   enabled: !isLoading,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Informe sua senha';
-                    }
-                    if (value.length < 6) {
-                      return 'A senha deve ter no mínimo 6 caracteres';
-                    }
+                    if (value == null || value.isEmpty) return 'Informe sua senha';
+                    if (value.length < 6) return 'A senha deve ter no mínimo 6 caracteres';
                     return null;
                   },
-                  decoration: InputDecoration(
-                    labelText: 'Senha',
-                    labelStyle: const TextStyle(fontFamily: 'Inter', color: AppColors.cinzaMorno),
-                    filled: true,
-                    fillColor: AppColors.brancoPuro,
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.azulSuave, width: 1.5),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.3), width: 1.0),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.coralSuave, width: 1.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.coralSuave, width: 1.5),
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton(
@@ -199,65 +124,31 @@ class _LoginScreenState extends State<LoginScreen> {
                     elevation: 2,
                     shadowColor: Colors.black.withValues(alpha: 0.06),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
                   child: isLoading 
-                    ? const SizedBox(
-                        height: 20, 
-                        width: 20, 
-                        child: CircularProgressIndicator(color: AppColors.brancoPuro, strokeWidth: 2)
-                      )
-                    : const Text(
-                        'Entrar',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: AppColors.brancoPuro, strokeWidth: 2))
+                    : const Text('Entrar', style: TextStyle(fontFamily: 'Inter', fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
                 const SizedBox(height: 16),
                 OutlinedButton.icon(
                   onPressed: isLoading ? null : _submitGoogleLogin,
                   icon: const Icon(Icons.g_mobiledata, size: 30, color: AppColors.carvao),
-                  label: const Text(
-                    'Entrar com o Google',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      color: AppColors.carvao,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  label: const Text('Entrar com o Google', style: TextStyle(fontFamily: 'Inter', color: AppColors.carvao, fontWeight: FontWeight.w500)),
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.4)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
                 ),
                 const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Não tem conta? ',
-                      style: TextStyle(fontFamily: 'Inter', color: AppColors.cinzaMorno),
-                    ),
+                    const Text('Não tem conta? ', style: TextStyle(fontFamily: 'Inter', color: AppColors.cinzaMorno)),
                     GestureDetector(
-                      onTap: isLoading ? null : () {
-                        Navigator.pushNamed(context, AppRoutes.register);
-                      },
-                      child: const Text(
-                        'Criar conta',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          color: AppColors.azulSuave,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      onTap: isLoading ? null : () => Navigator.pushNamed(context, AppRoutes.register),
+                      child: const Text('Criar conta', style: TextStyle(fontFamily: 'Inter', color: AppColors.azulSuave, fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),
@@ -269,3 +160,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+

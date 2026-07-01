@@ -9,6 +9,7 @@ import 'providers/group_provider.dart';
 import 'providers/feed_provider.dart';
 import 'providers/location_provider.dart';
 import 'providers/hug_provider.dart';
+import 'providers/profile_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +26,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => FeedProvider()),
         ChangeNotifierProvider(create: (_) => LocationProvider()),
         ChangeNotifierProvider(create: (_) => HugProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
       ],
       child: const LacoApp(),
     ),

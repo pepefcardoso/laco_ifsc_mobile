@@ -154,4 +154,22 @@ class FirestoreService {
             .map((doc) => HugModel.fromMap(doc.data(), doc.id))
             .toList());
   }
+
+  Future<List<PostModel>> getUserPosts(String groupId, String authorId) async {
+    if (groupId.isEmpty) return [];
+    
+    final query = await _db
+        .collection('groups')
+        .doc(groupId)
+        .collection('posts')
+        .where('authorId', isEqualTo: authorId)
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    return query.docs.map((doc) => PostModel.fromMap(doc.data(), doc.id)).toList();
+  }
+
+  Future<void> updateUser(String uid, Map<String, dynamic> data) async {
+    await _db.collection('users').doc(uid).update(data);
+  }
 }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_routes.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/auth_text_field.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -71,129 +72,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
               children: [
                 const Text(
                   'Criar Conta',
-                  style: TextStyle(
-                    fontFamily: 'Nunito',
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.carvao,
-                    letterSpacing: -0.5,
-                  ),
+                  style: TextStyle(fontFamily: 'Nunito', fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.carvao, letterSpacing: -0.5),
                 ),
                 const SizedBox(height: 8),
                 const Text(
                   'Comece a registrar momentos especiais.',
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 14,
-                    color: AppColors.cinzaMorno,
-                  ),
+                  style: TextStyle(fontFamily: 'Inter', fontSize: 14, color: AppColors.cinzaMorno),
                 ),
                 const SizedBox(height: 40),
-                TextFormField(
+                AuthTextField(
                   controller: _nameController,
+                  labelText: 'Nome Completo',
                   enabled: !isLoading,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Informe seu nome completo';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: 'Nome Completo',
-                    labelStyle: const TextStyle(fontFamily: 'Inter', color: AppColors.cinzaMorno),
-                    filled: true,
-                    fillColor: AppColors.brancoPuro,
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.azulSuave, width: 1.5),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.3), width: 1.0),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.coralSuave, width: 1.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.coralSuave, width: 1.5),
-                    ),
-                  ),
+                  validator: (value) => (value == null || value.trim().isEmpty) ? 'Informe seu nome completo' : null,
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
+                AuthTextField(
                   controller: _emailController,
+                  labelText: 'E-mail',
                   keyboardType: TextInputType.emailAddress,
                   enabled: !isLoading,
                   validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Informe seu e-mail';
-                    }
-                    if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
-                      return 'Informe um e-mail válido';
-                    }
+                    if (value == null || value.trim().isEmpty) return 'Informe seu e-mail';
+                    if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) return 'Informe um e-mail válido';
                     return null;
                   },
-                  decoration: InputDecoration(
-                    labelText: 'E-mail',
-                    labelStyle: const TextStyle(fontFamily: 'Inter', color: AppColors.cinzaMorno),
-                    filled: true,
-                    fillColor: AppColors.brancoPuro,
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.azulSuave, width: 1.5),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.3), width: 1.0),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.coralSuave, width: 1.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.coralSuave, width: 1.5),
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
+                AuthTextField(
                   controller: _passwordController,
+                  labelText: 'Senha (mínimo 6 caracteres)',
                   obscureText: true,
                   enabled: !isLoading,
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Informe sua senha';
-                    }
-                    if (value.length < 6) {
-                      return 'A senha deve ter no mínimo 6 caracteres';
-                    }
+                    if (value == null || value.isEmpty) return 'Informe sua senha';
+                    if (value.length < 6) return 'A senha deve ter no mínimo 6 caracteres';
                     return null;
                   },
-                  decoration: InputDecoration(
-                    labelText: 'Senha (mínimo 6 caracteres)',
-                    labelStyle: const TextStyle(fontFamily: 'Inter', color: AppColors.cinzaMorno),
-                    filled: true,
-                    fillColor: AppColors.brancoPuro,
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.azulSuave, width: 1.5),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: BorderSide(color: AppColors.cinzaMorno.withValues(alpha: 0.3), width: 1.0),
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.coralSuave, width: 1.0),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: AppColors.coralSuave, width: 1.5),
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton(
@@ -204,45 +119,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     elevation: 2,
                     shadowColor: Colors.black.withValues(alpha: 0.06),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
                   child: isLoading 
-                    ? const SizedBox(
-                        height: 20, 
-                        width: 20, 
-                        child: CircularProgressIndicator(color: AppColors.brancoPuro, strokeWidth: 2)
-                      )
-                    : const Text(
-                        'Cadastrar e Continuar',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: AppColors.brancoPuro, strokeWidth: 2))
+                    : const Text('Cadastrar e Continuar', style: TextStyle(fontFamily: 'Inter', fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Já possui conta? ',
-                      style: TextStyle(fontFamily: 'Inter', color: AppColors.cinzaMorno),
-                    ),
+                    const Text('Já possui conta? ', style: TextStyle(fontFamily: 'Inter', color: AppColors.cinzaMorno)),
                     GestureDetector(
-                      onTap: isLoading ? null : () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        'Fazer Login',
-                        style: TextStyle(
-                          fontFamily: 'Inter',
-                          color: AppColors.azulSuave,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      onTap: isLoading ? null : () => Navigator.pop(context),
+                      child: const Text('Fazer Login', style: TextStyle(fontFamily: 'Inter', color: AppColors.azulSuave, fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),
@@ -254,3 +144,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 }
+
