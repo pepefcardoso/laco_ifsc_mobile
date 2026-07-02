@@ -118,23 +118,23 @@ class FirestoreService {
   /// Returns the most recent hug sent from [fromUid] to [toUid] within the
   /// last hour, or null if no such hug exists. Used for the 1-hour cooldown.
   Future<HugModel?> getLastHugBetween(String groupId, String fromUid, String toUid) async {
-    final oneHourAgo = Timestamp.fromDate(
-      DateTime.now().subtract(const Duration(hours: 1)),
-    );
-
     final query = await _db
         .collection('groups')
         .doc(groupId)
         .collection('hugs')
         .where('fromUid', isEqualTo: fromUid)
         .where('toUid', isEqualTo: toUid)
-        .where('sentAt', isGreaterThan: oneHourAgo)
         .orderBy('sentAt', descending: true)
-        .limit(1)
+        .limit(5)
         .get();
 
-    if (query.docs.isNotEmpty) {
-      return HugModel.fromMap(query.docs.first.data(), query.docs.first.id);
+    final oneHourAgo = DateTime.now().subtract(const Duration(hours: 1));
+
+    for (final doc in query.docs) {
+      final hug = HugModel.fromMap(doc.data(), doc.id);
+      if (hug.sentAt.toDate().isAfter(oneHourAgo)) {
+        return hug;
+      }
     }
     return null;
   }

@@ -41,7 +41,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   }
 
   Future<void> _checkAuthAndNavigate() async {
-    await Future.delayed(const Duration(seconds: 2));
+    final authProvider = context.read<AuthProvider>();
+    await Future.wait([
+      Future.delayed(const Duration(seconds: 2)),
+      authProvider.authReadyFuture,
+    ]);
 
     if (!mounted) return;
 

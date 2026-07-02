@@ -7,6 +7,7 @@ import '../../core/constants/app_colors.dart';
 import '../../models/user_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/profile_provider.dart';
+import '../../providers/group_provider.dart';
 
 class EditProfileSheet extends StatefulWidget {
   final UserModel user;
@@ -50,12 +51,14 @@ class _EditProfileSheetState extends State<EditProfileSheet> {
 
     final profileProvider = context.read<ProfileProvider>();
     final authProvider = context.read<AuthProvider>();
+    final groupProvider = context.read<GroupProvider>();
 
     final success = await profileProvider.updateProfile(
       uid: widget.user.id,
       name: name,
       photoFile: _selectedImage,
       authProvider: authProvider,
+      groupProvider: groupProvider,
     );
 
     if (mounted) {

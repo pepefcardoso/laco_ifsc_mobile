@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../core/services/auth_service.dart';
 import '../core/services/firestore_service.dart';
 import '../models/user_model.dart';
+import 'dart:async';
 
 class AuthProvider with ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -13,10 +14,15 @@ class AuthProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
 
+  final Completer<void> _authReadyCompleter = Completer<void>();
+  bool _isAuthReady = false;
+
   User? get currentUser => _user;
   UserModel? get userModel => _userModel;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+  bool get isAuthReady => _isAuthReady;
+  Future<void> get authReadyFuture => _authReadyCompleter.future;
 
   AuthProvider() {
     _authService.authStateChanges.listen((user) async {
@@ -25,6 +31,10 @@ class AuthProvider with ChangeNotifier {
         _userModel = await _firestoreService.getUser(user.uid);
       } else {
         _userModel = null;
+      }
+      if (!_isAuthReady) {
+        _isAuthReady = true;
+        _authReadyCompleter.complete();
       }
       notifyListeners();
     });

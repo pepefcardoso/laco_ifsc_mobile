@@ -160,6 +160,12 @@ class GroupProvider with ChangeNotifier {
     }
   }
 
+  /// Reloads member list from Firestore. Call after a profile update.
+  Future<void> refreshMembers() async {
+    if (_currentGroup == null) return;
+    await _loadMembers(_currentGroup!.members);
+  }
+
   void clearGroup() {
     _currentGroup = null;
     _members = [];

@@ -47,7 +47,7 @@ class CodeCreatedView extends StatelessWidget {
         const SizedBox(height: 32),
         ElevatedButton.icon(
           onPressed: () {
-            Share.share('Junte-se à minha família no Laço! Baixe o app e use o código de convite: ${groupProvider.currentGroup!.code}');
+            SharePlus.instance.share(ShareParams(text: 'Junte-se à minha família no Laço! Baixe o app e use o código de convite: ${groupProvider.currentGroup!.code}'));
           },
           icon: const Icon(Icons.share),
           label: const Text('Compartilhar Código'),

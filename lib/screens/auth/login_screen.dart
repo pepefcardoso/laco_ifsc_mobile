@@ -58,16 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void _submitGoogleLogin() async {
-    final authProvider = context.read<AuthProvider>();
-    final success = await authProvider.loginWithGoogle();
-    
-    if (success && mounted) {
-      _handleSuccess(authProvider);
-    } else if (mounted && authProvider.errorMessage != null) {
-      _showError(authProvider.errorMessage!);
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {

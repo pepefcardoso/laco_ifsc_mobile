@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../models/post_model.dart';
 import '../core/services/firestore_service.dart';
 import '../core/services/storage_service.dart';
 import 'auth_provider.dart';
+import 'group_provider.dart';
 
 class ProfileProvider with ChangeNotifier {
   final FirestoreService _firestoreService = FirestoreService();
@@ -39,6 +41,7 @@ class ProfileProvider with ChangeNotifier {
     required String name,
     File? photoFile,
     required AuthProvider authProvider,
+    required GroupProvider groupProvider,
   }) async {
     _isLoading = true;
     _errorMessage = null;
@@ -46,7 +49,13 @@ class ProfileProvider with ChangeNotifier {
 
     try {
       String? photoUrl;
+      final oldPhotoUrl = authProvider.userModel?.photoUrl ?? '';
+      
       if (photoFile != null) {
+        if (oldPhotoUrl.isNotEmpty) {
+          await CachedNetworkImage.evictFromCache(oldPhotoUrl);
+        }
+        
         final storagePath = 'avatars/$uid';
         photoUrl = await _storageService.uploadImage(photoFile, storagePath);
         if (photoUrl == null) {
@@ -63,6 +72,9 @@ class ProfileProvider with ChangeNotifier {
       
       // Refresh user data in AuthProvider
       await authProvider.refreshUser();
+      
+      // Refresh group members to reflect new photo in feed
+      await groupProvider.refreshMembers();
       
       _isLoading = false;
       notifyListeners();
