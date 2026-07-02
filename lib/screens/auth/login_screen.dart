@@ -130,6 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: AppColors.brancoPuro, strokeWidth: 2))
                     : const Text('Entrar', style: TextStyle(fontFamily: 'Inter', fontSize: 16, fontWeight: FontWeight.bold)),
                 ),
+                /*
                 const SizedBox(height: 16),
                 OutlinedButton.icon(
                   onPressed: isLoading ? null : _submitGoogleLogin,
@@ -141,6 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                   ),
                 ),
+                */
                 const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

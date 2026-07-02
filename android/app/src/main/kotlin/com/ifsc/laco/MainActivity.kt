@@ -1,4 +1,4 @@
-package com.example.laco_ifsc_mobile
+package com.ifsc.laco
 
 import io.flutter.embedding.android.FlutterActivity
 

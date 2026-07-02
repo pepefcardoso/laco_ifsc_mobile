@@ -49,3 +49,6 @@ lib/core/constants/api_keys.dart
 backlog.md
 design.md
 spec.md
+
+# Dotenv
+.env

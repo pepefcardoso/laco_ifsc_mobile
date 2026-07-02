@@ -18,7 +18,7 @@ class LocationProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   LocationPermission? _permissionStatus;
-  Map<String, MemberLocationData> _memberLocations = {};
+  final Map<String, MemberLocationData> _memberLocations = {};
 
   Position? get currentPosition => _currentPosition;
   String? get cityName => _cityName;

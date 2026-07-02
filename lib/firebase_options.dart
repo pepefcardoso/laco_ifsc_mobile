@@ -66,6 +66,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '510383029326',
     projectId: 'lacomobileapp',
     storageBucket: 'lacomobileapp.firebasestorage.app',
+    androidClientId: '510383029326-nf0stv7gq8hsa78gp0fguiq5fpootm0a.apps.googleusercontent.com',
     iosClientId: '510383029326-3ct67s9ei8tmq9ggfbtumb8lknc7catg.apps.googleusercontent.com',
     iosBundleId: 'com.example.lacoIfscMobile',
   );

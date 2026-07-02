@@ -17,12 +17,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -107,6 +109,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   validator: (value) {
                     if (value == null || value.isEmpty) return 'Informe sua senha';
                     if (value.length < 6) return 'A senha deve ter no mínimo 6 caracteres';
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                AuthTextField(
+                  controller: _confirmPasswordController,
+                  labelText: 'Confirmar Senha',
+                  obscureText: true,
+                  enabled: !isLoading,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return 'Confirme sua senha';
+                    if (value != _passwordController.text) return 'As senhas não coincidem';
                     return null;
                   },
                 ),
